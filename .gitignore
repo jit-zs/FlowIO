@@ -1,0 +1,15 @@
+*.dll
+*.exe
+*.lib
+*.pdb
+
+*.o
+*.d
+*.a
+
+help.txt
+Project.dsw
+CMakeCache.txt
+ALL_BUILD*
+
+build/*
