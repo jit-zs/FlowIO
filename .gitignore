@@ -13,5 +13,7 @@ CMakeCache.txt
 ALL_BUILD*
 
 build/*
-
+.vscode/*
 Makefile
+test_dir
+CMakeFiles
