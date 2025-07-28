@@ -1,8 +1,8 @@
 
 
 all: 
-	cmake -B build -G "MinGW Makefiles" -C build
-	make -f build/Makefile
+	cmake -B build/ -G "MinGW Makefiles"
+	cd build; make
 
 clean:
 	rm -r -f build/*
