@@ -17,14 +17,20 @@ namespace fio {
     }
     bool binary_stream::_write_open_file(const char* path, write_mode mode) {
         mFile = fopen(path, mode == write_mode::append ? "ab+" : "wb+");
-        return mFile != nullptr;
+        if (mFile) {
+            mCurrentAccessMode = access_mode::write;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-    binary_stream& binary_stream::write(const std::byte* bytes, size_t count) {
-        FIO_ASSERT(mCurrentAccessMode == access_mode::read, "Cannot write to a stream while reading it");
+    binary_stream& binary_stream::write(const void* bytes, size_t count) {
+        FIO_ASSERT(mCurrentAccessMode == access_mode::write, "Cannot write to a stream while reading it");
         fwrite(bytes, sizeof(std::byte), count, mFile);
         return *this;
     }
-    binary_stream& binary_stream::read(std::byte* bytes, size_t count) {
+    binary_stream& binary_stream::read(void* bytes, size_t count) {
         FIO_ASSERT(mCurrentAccessMode == access_mode::read, "Cannot read from a stream while writing to it");
         fread(bytes, sizeof(std::byte), count, mFile);
         return *this;
@@ -32,7 +38,7 @@ namespace fio {
 
     void binary_stream::close() {
         FIO_ASSERT(mFile, "The stream is not open and has nothing to close");
-        fclose(mFile); 
+        fclose(mFile);
         mFile = nullptr;
         mCurrentAccessMode = access_mode::none;
     }

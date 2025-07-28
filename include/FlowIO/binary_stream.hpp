@@ -24,8 +24,8 @@ namespace fio {
         ~binary_stream();
 
         bool write_open(const std::filesystem::path& file, write_mode mode = write_mode::create);
-        binary_stream& write(const std::byte* bytes, size_t count);
-        binary_stream& read(std::byte* bytes, size_t count);
+        binary_stream& write(const void* bytes, size_t count);
+        binary_stream& read(void* bytes, size_t count);
         void close();
     private:
         bool _write_open_file(const char* file, write_mode mode);
