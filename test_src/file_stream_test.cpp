@@ -2,7 +2,7 @@
 #include <FlowIO/binary_stream.hpp>
 #include <FlowIO/assert.hpp>
 #include <filesystem>
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
     fio::binary_stream stream;
     std::filesystem::path testFile = "test_dir/binary_stream_test_file.byte";
     stream.write_open(testFile);
@@ -11,13 +11,16 @@ int main(int argc, char* argv[]){
         stream.close();
     }
     catch (fio::io_error& ex) {
-    
+
     }
+
+
+
     char readBytes[2];
     stream.read_open(testFile);
     stream.read(readBytes, 2);
     stream.close();
-    for (char c : readBytes){
+    for (char c : readBytes) {
         std::cout << (int)c << std::endl;
     }
     return 0;

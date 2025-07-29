@@ -35,24 +35,57 @@ namespace fio {
             return true;
         }
         else {
+            mOpenErr = strerror(errno);
             return false;
         }
     }
+
     binary_stream& binary_stream::write(const void* bytes, size_t count) {
         FIO_ASSERT(mCurrentAccessMode == access_mode::write, "Cannot write to a stream while reading it");
         fwrite(bytes, sizeof(std::byte), count, mFile);
+        if (int err = ferror(mFile)) {
+            throw fio::io_error(strerror(errno));
+        }
+
         return *this;
     }
     binary_stream& binary_stream::read(void* bytes, size_t count) {
         FIO_ASSERT(mCurrentAccessMode == access_mode::read, "Cannot read from a stream while writing to it");
+        size_t currFilePtr = ftell(mFile);
+        fseek(mFile, 0L, SEEK_END);
+        size_t filesize = ftell(mFile);
+        fseek(mFile, currFilePtr, SEEK_SET);
+
+        if (currFilePtr + count >= filesize) {
+            throw fio::io_error("Error trying to read past EOF");
+        }
         fread(bytes, sizeof(std::byte), count, mFile);
+        if (ferror(mFile)) {
+            throw fio::io_error(strerror(errno));
+        }
+
         return *this;
     }
-
+    binary_stream::operator bool() const{
+        return _check_open();
+    }
+    bool binary_stream::open() const{
+        return _check_open();
+    }
     void binary_stream::close() {
         FIO_ASSERT(mFile, "The stream is not open and has nothing to close");
-        fclose(mFile);
+        if (fclose(mFile)) {
+            mFile = nullptr;
+            mCurrentAccessMode = access_mode::none;
+            throw fio::io_error("The file could not be finalized");
+        }
         mFile = nullptr;
         mCurrentAccessMode = access_mode::none;
+    }
+    bool binary_stream::_check_open() const{
+        return mFile;
+    }
+    const char* binary_stream::open_error_str() const {
+        return mOpenErr;
     }
 }
