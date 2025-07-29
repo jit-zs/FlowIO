@@ -15,10 +15,23 @@ namespace fio {
     bool binary_stream::write_open(const std::filesystem::path& p, write_mode mode) {
         return _write_open_file(p.string().c_str(), mode);
     }
+    bool binary_stream::read_open(const std::filesystem::path& p) {
+        return _read_open_file(p.string().c_str());
+    }
     bool binary_stream::_write_open_file(const char* path, write_mode mode) {
         mFile = fopen(path, mode == write_mode::append ? "ab+" : "wb+");
         if (mFile) {
             mCurrentAccessMode = access_mode::write;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    bool binary_stream::_read_open_file(const char* file) {
+        mFile = fopen(file, "r+");
+        if (mFile) {
+            mCurrentAccessMode = access_mode::read;
             return true;
         }
         else {
