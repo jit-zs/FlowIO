@@ -10,7 +10,10 @@ namespace fio {
 
     }
     binary_stream::~binary_stream() {
-
+        if (mFile) {
+            fclose(mFile);
+            mFile = nullptr;
+        }
     }
     bool binary_stream::write_open(const std::filesystem::path& p, write_mode mode) {
         return _write_open_file(p.string().c_str(), mode);
@@ -56,7 +59,7 @@ namespace fio {
         size_t filesize = ftell(mFile);
         fseek(mFile, currFilePtr, SEEK_SET);
 
-        if (currFilePtr + count >= filesize) {
+        if (currFilePtr + count - 1 >= filesize) {
             throw fio::io_error("Error trying to read past EOF");
         }
         fread(bytes, sizeof(std::byte), count, mFile);
@@ -66,14 +69,16 @@ namespace fio {
 
         return *this;
     }
-    binary_stream::operator bool() const{
+    binary_stream::operator bool() const {
         return _check_open();
     }
-    bool binary_stream::open() const{
+    bool binary_stream::is_open() const {
         return _check_open();
     }
     void binary_stream::close() {
-        FIO_ASSERT(mFile, "The stream is not open and has nothing to close");
+        if (!mFile) {
+            return;
+        }
         if (fclose(mFile)) {
             mFile = nullptr;
             mCurrentAccessMode = access_mode::none;
@@ -82,7 +87,7 @@ namespace fio {
         mFile = nullptr;
         mCurrentAccessMode = access_mode::none;
     }
-    bool binary_stream::_check_open() const{
+    bool binary_stream::_check_open() const {
         return mFile;
     }
     const char* binary_stream::open_error_str() const {

@@ -28,10 +28,14 @@ namespace fio {
         bool read_open(const std::filesystem::path& file);
         binary_stream& write(const void* bytes, size_t count);
         binary_stream& read(void* bytes, size_t count);
+
+        /// @brief Closes the stream and finalizes the file
+        /// @note - If the stream is already closed then the function returns early 
+        /// @note - This function will throw an fio::io_error if the closing process fails
         void close();
 
         operator bool() const;
-        bool open() const;
+        bool is_open() const;
     private:
         bool _check_open() const;
         bool _write_open_file(const char* file, write_mode mode);

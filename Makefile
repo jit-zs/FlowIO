@@ -1,8 +1,10 @@
 
 
-all: 
-	cmake -B build/ -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
+all: build/CMakeCache.txt
 	cd build; make
+build/CMakeCache.txt: $(wildcard src/*.cpp) $(wildcard test_src/*.cpp)
+	cmake -B build/ -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
+run:
 	build/mutable_test
-clean:
+clean: 
 	rm -r -f build/*
