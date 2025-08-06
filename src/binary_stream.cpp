@@ -38,7 +38,7 @@ namespace fio {
             return true;
         }
         else {
-            mOpenErr = strerror(errno);
+            mLastErr = strerror(errno);
             return false;
         }
     }
@@ -47,7 +47,7 @@ namespace fio {
         FIO_ASSERT(mCurrentAccessMode == access_mode::write, "Cannot write to a stream while reading it");
         fwrite(bytes, sizeof(std::byte), count, mFile);
         if (int err = ferror(mFile)) {
-            throw fio::io_error(strerror(errno));
+            _raise_error(strerror(errno));
         }
 
         return *this;
@@ -60,11 +60,11 @@ namespace fio {
         fseek(mFile, currFilePtr, SEEK_SET);
 
         if (currFilePtr + count - 1 >= filesize) {
-            throw fio::io_error("Error trying to read past EOF");
+            _raise_error("Error trying to read past EOF");
         }
         fread(bytes, sizeof(std::byte), count, mFile);
         if (ferror(mFile)) {
-            throw fio::io_error(strerror(errno));
+            _raise_error(strerror(errno));
         }
 
         return *this;
@@ -82,7 +82,7 @@ namespace fio {
         if (fclose(mFile)) {
             mFile = nullptr;
             mCurrentAccessMode = access_mode::none;
-            throw fio::io_error("The file could not be finalized");
+            _raise_error("The file could not be finalized");
         }
         mFile = nullptr;
         mCurrentAccessMode = access_mode::none;
@@ -91,6 +91,11 @@ namespace fio {
         return mFile;
     }
     const char* binary_stream::open_error_str() const {
-        return mOpenErr;
+        return mLastErr;
+    }
+
+    void binary_stream::_raise_error(const char* errorMsg) {
+        mLastErr = errorMsg;
+        throw fio::io_error(mLastErr);
     }
 }
