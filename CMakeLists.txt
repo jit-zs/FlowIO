@@ -5,12 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_library(FlowIO 
     src/binary_stream.cpp
-    src/io_error.cpp)
+    src/io_error.cpp
+    )
 target_include_directories(FlowIO PUBLIC include)
 
 
-add_executable(mutable_test test_src/file_stream_test.cpp)
-target_link_libraries(mutable_test PUBLIC FlowIO)
+add_executable(file_stream_test test_src/file_stream_test.cpp)
+target_link_libraries(file_stream_test PUBLIC FlowIO)
 
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
