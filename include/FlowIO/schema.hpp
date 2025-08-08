@@ -1,19 +1,9 @@
 #ifndef FLOWIO_SCHEMA_HPP
 #define FLOWIO_SCHEMA_HPP
+#include <FlowIO/schema_array.hpp>
+#include <FlowIO/schema_object.hpp>
+#include <FlowIO/schema_primitive.hpp>
+#include <FlowIO/schema_value_base.hpp>
+#include <FlowIO/schema_concepts.hpp>
 
-#include <vector>
-#include <map>
-
-#include <FlowIO/schema_value.hpp>
-
-namespace fio{
-   
-    class schema{
-        public:
-        private:
-        std::vector<schema_value> mSchemaOrder;
-        public:
-        private:
-    };
-}
 #endif
