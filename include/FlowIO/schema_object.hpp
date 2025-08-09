@@ -1,30 +1,47 @@
 #ifndef FLOWIO_SCHEMA_OBJECT_HPP
 #define FLOWIO_SCHEMA_OBJECT_HPP
 #include <FlowIO/schema_value_base.hpp>
-namespace fio{
-    
+#include <FlowIO/schema_concepts.hpp>
+namespace fio {
+
     template <schema_value ... Layout>
-    class schema_object : schema_value_base {
+    class schema_object : public schema_value_base {
     public:
     private:
         std::tuple<Layout ...> mElems;
     public:
-        virtual bool read_from_stream(const binary_stream& stream) {
-            int result = 0;
-            std::index_sequence_for<Layout...> intSeq;
-            (result += std::get<intSeq>(mElems).read_from_stream(stream) == true, ...);
-            return result == sizeof...(T);
+        schema_object() = default;
+        schema_object(const schema_object& other) = default;
+        schema_object& operator=(const schema_object& other) = default;
+        ~schema_object() = default;
+        virtual bool read_from_stream(binary_stream& stream) override {
+            return _read_from_stream_impl(stream, std::make_index_sequence<sizeof...(Layout)>{});
+        }
+        virtual bool write_to_stream(binary_stream& stream) override {
+            return _write_to_file_impl(stream, std::make_index_sequence<sizeof...(Layout)>{});
         }
         template <size_t Idx, schema_value T = std::tuple_element<Idx, std::tuple<Layout...>>::type >
-        const T& get() const {
-            return mElems.get<Idx>();
+        const T& at() const {
+            return std::get<Idx>(mElems);
         }
         template <size_t Idx, schema_value T = std::tuple_element<Idx, std::tuple<Layout...>>::type >
-        void set(const T& value) {
-            mElems.get<Idx>() = value;
+        T& at() {
+            return std::get<Idx>(mElems);
         }
 
     private:
+        template <size_t ... I>
+        bool _read_from_stream_impl(binary_stream& stream, std::integer_sequence<size_t, I...> indexSequence) {
+            int result = 0;
+            ((result += std::get<I>(mElems).read_from_stream(stream) == true), ...);
+            return result == indexSequence.size();
+        }
+        template <size_t ... I>
+        bool _write_to_file_impl(binary_stream& stream, std::integer_sequence<size_t, I...> indexSequence) {
+            int result = 0;
+            ((result += std::get<I>(mElems).write_to_stream(stream) == true), ...);
+            return result == indexSequence.size();
+        }
     };
 }
 #endif

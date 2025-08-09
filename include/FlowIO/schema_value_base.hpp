@@ -13,11 +13,12 @@ namespace fio {
     public:
     private:
     public:
-        virtual bool read_from_stream(const binary_stream& stream) = 0;
-        virtual bool write_to_stream(const binary_stream& stream) = 0;
+        virtual ~schema_value_base() = default;
+        virtual bool read_from_stream(binary_stream& stream) = 0;
+        virtual bool write_to_stream(binary_stream& stream) = 0;
     private:
     };
-   
+
 
 
 
