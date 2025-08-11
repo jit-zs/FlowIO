@@ -11,5 +11,15 @@ namespace fio {
 
     template <typename T>
     concept schema_value = std::is_base_of_v<schema_value_base, T>;
+
+    template <typename T>
+    concept character =
+        std::same_as<T, char> ||
+        std::same_as<T, signed char> ||
+        std::same_as<T, unsigned char> ||
+        std::same_as<T, wchar_t> ||
+        std::same_as<T, char8_t> ||
+        std::same_as<T, char16_t> ||
+        std::same_as<T, char32_t>;
 }
 #endif

@@ -37,8 +37,7 @@ namespace fio {
             std::copy(other.mData, other.mData + other.mLength, mData);
         }
         virtual ~schema_array() {
-            if (mData)
-                delete[] mData;
+            delete[] mData;
         }
         EntryLayout& operator[](LengthType idx) {
             FIO_ASSERT(idx < mLength, "Out of bounds error");
@@ -98,7 +97,8 @@ namespace fio {
             resize(mLength);
             LengthType result = 0;
             for (LengthType i = 0; i < mLength; i++) {
-                result += mData[i].read_from_stream(stream) == true;
+                if (mData[i].read_from_stream(stream) == true)
+                    result++;
             }
             return result == mLength;
         }
@@ -111,7 +111,8 @@ namespace fio {
             }
             LengthType result = 0;
             for (LengthType i = 0; i < mLength; i++) {
-                result += mData[i].write_to_stream(stream) == true;
+                if (mData[i].write_to_stream(stream) == true)
+                    result++;
             }
             return result == mLength;
         }
@@ -124,6 +125,15 @@ namespace fio {
                 mData = temp;
                 mCapacity *= 2;
             }
+        }
+        void _copy_array(LengthType len, LengthType cap, EntryLayout data) {
+            FIO_ASSERT(data != mData, "Data cannot copy a itself");
+            if (mData)
+                delete[] mData;
+            mData = new EntryLayout[cap];
+            mCapacity = cap;
+            mLength = len;
+            std::copy(data, data + len, mData);
         }
     };
 

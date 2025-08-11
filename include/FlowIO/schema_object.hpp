@@ -12,10 +12,11 @@ namespace fio {
     public:
         schema_object() = default;
         schema_object(const schema_object& other) = default;
+        schema_object(const std::tuple<Layout...>& elems) : mElems(elems){}
         schema_object& operator=(const schema_object& other) = default;
         ~schema_object() = default;
         virtual bool read_from_stream(binary_stream& stream) override {
-            return _read_from_stream_impl(stream, std::make_index_sequence<sizeof...(Layout)>{});
+            return _read_from_stream_impl(stream, std::make_index_sequence<sizeof...(Layout)>{}); 
         }
         virtual bool write_to_stream(binary_stream& stream) override {
             return _write_to_file_impl(stream, std::make_index_sequence<sizeof...(Layout)>{});
@@ -32,15 +33,15 @@ namespace fio {
     private:
         template <size_t ... I>
         bool _read_from_stream_impl(binary_stream& stream, std::integer_sequence<size_t, I...> indexSequence) {
-            int result = 0;
+            size_t result = 0;
             ((result += std::get<I>(mElems).read_from_stream(stream) == true), ...);
-            return result == indexSequence.size();
+            return result >= indexSequence.size();
         }
         template <size_t ... I>
         bool _write_to_file_impl(binary_stream& stream, std::integer_sequence<size_t, I...> indexSequence) {
-            int result = 0;
+            size_t result = 0;
             ((result += std::get<I>(mElems).write_to_stream(stream) == true), ...);
-            return result == indexSequence.size();
+            return result >= indexSequence.size();
         }
     };
 }
