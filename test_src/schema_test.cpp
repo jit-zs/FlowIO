@@ -32,7 +32,7 @@ int main() {
     std::cout << "Test string: " << (strcmp(writeObj.at<2>().data(), readObj.at<2>().data()) == 0) << std::endl;
 
     std::cout << "Test u8 1: " << (writeObj.at<1>()[0].at<0>() == readObj.at<1>()[0].at<0>()) << std::endl;
-    std::cout << "Test u8 1: " << (writeObj.at<1>()[1].at<0>() == readObj.at<1>()[1].at<0>()) << std::endl;
+    std::cout << "Test u8 2: " << (writeObj.at<1>()[1].at<0>() == readObj.at<1>()[1].at<0>()) << std::endl;
 
     std::cout << "Test string 1: " << (strcmp(writeObj.at<1>()[0].at<1>().data(), readObj.at<1>()[0].at<1>().data()) == 0) << std::endl;
     std::cout << "Test string 2: " << (strcmp(writeObj.at<1>()[1].at<1>().data(), readObj.at<1>()[1].at<1>().data()) == 0) << std::endl;
