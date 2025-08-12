@@ -2,9 +2,12 @@
 #define FLOWIO_SCHEMA_ARRAY_HPP
 #include <FlowIO/schema_value_base.hpp>
 #include <FlowIO/schema_concepts.hpp>
+#include <FlowIO/schema_primitive.hpp>
+#include <FlowIO/byteswap.hpp>
+#include <FlowIO/endian.hpp>
 #include <FlowIO/assert.hpp>
 namespace fio {
-    template <integer LengthType, schema_value EntryLayout>
+    template <integer LengthType, fio::endian IndexerEndian, schema_value EntryLayout>
     class schema_array : public schema_value_base {
     public:
     private:
@@ -89,6 +92,9 @@ namespace fio {
             clear();
             try {
                 stream.read(&mLength, sizeof(mLength));
+                if constexpr (sizeof(LengthType) > 1 && IndexerEndian != fio::endian::none)
+                    if (get_platform_endian() != IndexerEndian)
+                        byteswap(mLength);
             }
             catch (fio::io_error& err) {
                 return false;
@@ -104,7 +110,11 @@ namespace fio {
         }
         bool write_to_stream(binary_stream& stream) override {
             try {
-                stream.write(&mLength, sizeof(mLength));
+                LengthType placeholder = mLength;
+                if constexpr (sizeof(LengthType) > 1 && IndexerEndian != fio::endian::none)
+                    if (get_platform_endian() != IndexerEndian)
+                        placeholder = byteswap(placeholder);
+                stream.write(&placeholder, sizeof(LengthType));
             }
             catch (fio::io_error& err) {
                 return false;
@@ -138,22 +148,22 @@ namespace fio {
     };
 
     template <schema_value T>
-    using schema_array_u8 = schema_array<uint8_t, T>;
-    template <schema_value T>
-    using schema_array_u16 = schema_array<uint16_t, T>;
-    template <schema_value T>
-    using schema_array_u32 = schema_array<uint32_t, T>;
-    template <schema_value T>
-    using schema_array_u64 = schema_array<uint64_t, T>;
+    using schema_array_u8 = schema_array<uint8_t, fio::endian::none, T>;
+
 
     template <schema_value T>
-    using schema_array_i8 = schema_array<int8_t, T>;
+    using schema_array_u16l = schema_array<uint16_t, fio::endian::little, T>;
     template <schema_value T>
-    using schema_array_i16 = schema_array<int16_t, T>;
+    using schema_array_u32l = schema_array<uint32_t, fio::endian::little, T>;
     template <schema_value T>
-    using schema_array_i32 = schema_array<int32_t, T>;
+    using schema_array_u64l = schema_array<uint64_t, fio::endian::little, T>;
+
     template <schema_value T>
-    using schema_array_i64 = schema_array<int64_t, T>;
+    using schema_array_i16b = schema_array<int16_t, fio::endian::big, T>;
+    template <schema_value T>
+    using schema_array_i32b = schema_array<int32_t, fio::endian::big, T>;
+    template <schema_value T>
+    using schema_array_i64b = schema_array<int64_t, fio::endian::big, T>;
 }
 
 #endif

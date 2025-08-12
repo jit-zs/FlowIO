@@ -3,10 +3,12 @@
 #include <FlowIO/schema_value_base.hpp>
 #include <FlowIO/schema_concepts.hpp>
 #include <FlowIO/assert.hpp>
+#include <FlowIO/endian.hpp>
+#include <FlowIO/byteswap.hpp>
 #include <stdint.h>
 #include <string>
 namespace fio {
-    template <character T>
+    template <character T, fio::endian Endian>
     class basic_schema_null_string : public schema_value_base {
     public:
         using std_library_type = std::basic_string<T, std::char_traits<T>, std::allocator<char>>;
@@ -85,10 +87,20 @@ namespace fio {
         virtual bool write_to_stream(binary_stream& stream) {
             T* c = mData;
             size_t result = 0;
-            for (size_t i = 0; i < mLength + 1;i++) {
-                if (stream.write(&c[i], sizeof(T)) == true)
-                    result++;
+            try {
+                for (size_t i = 0; i < mLength + 1;i++) {
+                    T placeholder = c[i];
+                    if constexpr (sizeof(T) > 1 && Endian != fio::endian::none)
+                        if (get_platform_endian() != Endian)
+                            placeholder = byteswap(placeholder);
+                    if (stream.write(&placeholder, sizeof(T)) == true)
+                        result++;
+                }
             }
+            catch (fio::io_error& err) {
+                return false;
+            }
+
 
 
             return result == mLength + 1;
@@ -98,12 +110,21 @@ namespace fio {
             T c;
             size_t result;
             bool streamState = true;
-            while (streamState = stream.read(&c, sizeof(T))) {
-                result++;
-                push_back(c);
-                if (c == 0)
-                    break;
+            try {
+                while (streamState = stream.read(&c, sizeof(T))) {
+                    result++;
+                    if constexpr (sizeof(T) > 1 && Endian != fio::endian::none)
+                        if (get_platform_endian() != Endian)
+                            c = byteswap(c);
+                    push_back(c);
+                    if (c == 0)
+                        break;
+                }
             }
+            catch (fio::io_error& err) {
+                return false;
+            }
+
             return streamState;
         }
     private:
@@ -136,12 +157,27 @@ namespace fio {
         }
     };
 
-    typedef basic_schema_null_string<char> schema_null_string;
-    typedef basic_schema_null_string<wchar_t> wschema_null_string;
-    typedef basic_schema_null_string<signed char> schema_null_string_i8;
-    typedef basic_schema_null_string<unsigned char> schema_null_string_u8;
-    typedef basic_schema_null_string<char8_t> schema_null_string_c8;
-    typedef basic_schema_null_string<char16_t> schema_null_string_c16;
-    typedef basic_schema_null_string<char32_t> schema_null_string_c32;
+    typedef basic_schema_null_string<char, fio::endian::none> schema_null_string;
+    typedef basic_schema_null_string<char8_t, fio::endian::none> schema_null_string_c8;
+    typedef basic_schema_null_string<unsigned char, fio::endian::none> schema_null_string_u8;
+    typedef basic_schema_null_string<signed char, fio::endian::none> schema_null_string_i8;
+
+    typedef basic_schema_null_string<wchar_t, fio::endian::little> wschema_null_stringl;
+
+
+
+
+
+    typedef basic_schema_null_string<unsigned char, fio::endian::little> schema_null_string_u8l;
+
+
+    typedef basic_schema_null_string<char16_t, fio::endian::little> schema_null_string_c16l;
+
+
+    typedef basic_schema_null_string<char32_t, fio::endian::little> schema_null_string_c32l;
+
+    typedef basic_schema_null_string<wchar_t, fio::endian::big> wschema_null_stringb;
+    typedef basic_schema_null_string<char16_t, fio::endian::big> schema_null_string_c16b;
+    typedef basic_schema_null_string<char32_t, fio::endian::big> schema_null_string_c32b;
 }
 #endif

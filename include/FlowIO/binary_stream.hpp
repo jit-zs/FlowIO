@@ -43,6 +43,7 @@ namespace fio {
 
         operator bool() const;
         bool is_open() const;
+        bool at_last_byte() const;
     private:
         bool _check_open() const;
         bool _write_open_file(const char* file, write_mode mode);

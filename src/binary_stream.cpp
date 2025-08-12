@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+
+
 namespace fio {
     binary_stream::binary_stream() {
 
@@ -59,7 +61,7 @@ namespace fio {
         size_t filesize = ftell(mFile);
         fseek(mFile, currFilePtr, SEEK_SET);
 
-        if (currFilePtr + count - 1 >= filesize) {
+        if (currFilePtr + count > filesize) {
             _raise_error("Error trying to read past EOF");
         }
         fread(bytes, sizeof(std::byte), count, mFile);
@@ -74,6 +76,16 @@ namespace fio {
     }
     bool binary_stream::is_open() const {
         return _check_open();
+    }
+    /// @brief checks if file ptr is at last byte
+    /// @return returns true if true
+    bool binary_stream::at_last_byte() const {
+        size_t currFilePtr = ftell(mFile);
+        fseek(mFile, 0, SEEK_END);
+        size_t fileSize = ftell(mFile);
+        fseek(mFile, currFilePtr, SEEK_SET);
+
+        return currFilePtr == fileSize;
     }
     void binary_stream::close() {
         if (!mFile) {
