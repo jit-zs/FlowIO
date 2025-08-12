@@ -31,11 +31,11 @@ namespace fio {
             return _write_to_file_impl(stream, std::make_index_sequence<sizeof...(Layout)>{});
         }
         template <size_t Idx, schema_value T = std::tuple_element<Idx, std::tuple<Layout...>>::type >
-        const T& at() const {
+        const T& get() const {
             return std::get<Idx>(mElems);
         }
         template <size_t Idx, schema_value T = std::tuple_element<Idx, std::tuple<Layout...>>::type >
-        T& at() {
+        T& get() {
             return std::get<Idx>(mElems);
         }
 
