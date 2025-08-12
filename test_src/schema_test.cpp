@@ -1,5 +1,5 @@
 #include <iostream> 
-#include <FlowIO/schema.hpp>
+#include <FlowIO/FlowIO.hpp>
 #include <cstring>
 int main() {
     using namespace std::string_literals;
