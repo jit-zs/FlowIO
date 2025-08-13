@@ -1,7 +1,7 @@
 ## Flow IO
-Flow IO is a crossplatform C++20 IO library that aids in the loading and validation of files
-## Example
-Write
+Flow IO is a crossplatform C++20 IO library that aids in the saving, loading and validation of files
+## Schema Examples
+Schema Write
 ```cpp
 #include <FlowIO/FlowIO.hpp>
 
@@ -24,7 +24,7 @@ int main(){
     stream.close();
 }
 ```
-Read
+Schema Read
 ```cpp
 #include <FlowIO/FlowIO.hpp>
 
@@ -41,5 +41,40 @@ int main(){
 }
 
 ```
-## Feedback
+## Binary Stream examples
+Read
+```cpp
+#include <FlowIO/FlowIO.hpp>
+
+int main(){
+    fio::binary_stream stream;
+    stream.write_open("example.byte");
+
+    try {
+        // stream.write(exampleData, exampleSize); ...
+        stream.close();
+    }
+    catch(fio::error& err){
+        std::cout << "Failed saving example.txt due to'" << err.what() << "'" << std::endl;
+    }
+}
+```
+Write
+``` cpp
+#include <FlowIO/FlowIO.hpp>
+
+int main(){
+    fio::binary_stream stream;
+    stream.read_open("example.byte");
+
+    try {
+        // stream.read(exampleBuffer, exampleSize); ...
+        stream.close();
+    }
+    catch(fio::error& err){
+        std::cout << "Failed loading example.txt due to '" << err.what() << "'" << std::endl;
+    }
+}
+```
+ ## Feedback
 All feedback is welcome, from suggestions to security errors. I am eager to help.
