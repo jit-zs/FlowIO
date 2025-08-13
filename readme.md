@@ -41,7 +41,7 @@ int main(){
 }
 
 ```
-## Binary Stream examples
+## Binary Stream Examples
 Read
 ```cpp
 #include <FlowIO/FlowIO.hpp>
