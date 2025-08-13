@@ -162,21 +162,13 @@ namespace fio {
     typedef basic_schema_null_string<unsigned char, fio::endian::none> schema_null_string_u8;
     typedef basic_schema_null_string<signed char, fio::endian::none> schema_null_string_i8;
 
-    typedef basic_schema_null_string<wchar_t, fio::endian::little> wschema_null_stringl;
+    
 
-
-
-
-
-    typedef basic_schema_null_string<unsigned char, fio::endian::little> schema_null_string_u8l;
-
-
+    typedef basic_schema_null_string<wchar_t, fio::endian::little> schema_null_wstringl;
     typedef basic_schema_null_string<char16_t, fio::endian::little> schema_null_string_c16l;
-
-
     typedef basic_schema_null_string<char32_t, fio::endian::little> schema_null_string_c32l;
 
-    typedef basic_schema_null_string<wchar_t, fio::endian::big> wschema_null_stringb;
+    typedef basic_schema_null_string<wchar_t, fio::endian::big> schema_null_wstringb;
     typedef basic_schema_null_string<char16_t, fio::endian::big> schema_null_string_c16b;
     typedef basic_schema_null_string<char32_t, fio::endian::big> schema_null_string_c32b;
 }
