@@ -11,8 +11,9 @@ namespace fio {
     private:
         std::tuple<Layout ...> mElems;
     public:
+        schema_object() = default;
         schema_object(const schema_object& other) = default;
-        schema_object(const Layout& elems = Layout(), ...) : mElems({elems, ...}) {}
+        schema_object(const std::tuple<Layout...>& elems) : mElems(elems) {}
         schema_object& operator=(const schema_object& other) = default;
         ~schema_object() = default;
         /// @brief  Determimnes if a whole file fits this schema

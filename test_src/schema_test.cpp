@@ -15,8 +15,8 @@ int main() {
 
     file_type writeObj = file_type();
     writeObj.get<0>() = 33;
-    writeObj.get<1>().push_back({ fio::schema_u8(0x2A), fio::schema_null_string("const") });
-    writeObj.get<1>().push_back({ fio::schema_u8(0x39), fio::schema_null_string("nair") });
+    writeObj.get<1>().push_back(std::tuple{ fio::schema_u8(0x2A), fio::schema_null_string("const") });
+    writeObj.get<1>().push_back(std::tuple{ fio::schema_u8(0x39), fio::schema_null_string("nair") });
     writeObj.get<2>() = "Fool";
 
     fio::binary_stream stream;
