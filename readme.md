@@ -42,4 +42,4 @@ int main(){
 
 ```
 ## Feedback
-All feedback is welcome. I am glad to help.
+All feedback is welcome, from suggestions to security errors. I am eager to help.
