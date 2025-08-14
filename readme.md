@@ -1,5 +1,5 @@
 ## Flow IO
-Flow IO is a crossplatform C++20 IO library that aids in the saving, loading and validation of files
+Flow IO is a crossplatform C++20 IO library that aids in the saving, loading and validation of binary files
 ## Schema Examples
 Schema Write
 ```cpp
