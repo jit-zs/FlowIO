@@ -76,5 +76,6 @@ int main(){
     }
 }
 ```
- ## Feedback
-All feedback is welcome, from suggestions to security errors. I am eager to help.
+## Feedback
+All feedback is welcome, from suggestions to security errors. I am eager to help. Just submit them through an issue.
+
