@@ -35,7 +35,7 @@ int main(){
     fio::binary_stream stream;
     stream.read_open("example.byte");
 
-    obj.read_validate_schema(stream)
+    obj.read_validate_schema(stream);
 
     stream.close();
 }
