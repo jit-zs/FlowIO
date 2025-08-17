@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
 project(FlowIO)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(CMAKE_C_COMPILER "/usr/bin/gcc")
+    set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+endif()
+
 
 
 add_library(FlowIO 

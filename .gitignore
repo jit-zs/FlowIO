@@ -15,5 +15,5 @@ ALL_BUILD*
 build/*
 .vscode/*
 Makefile
-test_dir
+test_dir/*
 CMakeFiles
