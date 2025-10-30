@@ -78,7 +78,3 @@ int main(){
 ```
 ## Feedback
 All feedback is welcome, from suggestions to security errors. I am eager to help. Just submit them through an issue. 
-## Goal
-I want this library to have the ability to represent most file formats without the need to implement a custom class to implement read and write functions
-
-
